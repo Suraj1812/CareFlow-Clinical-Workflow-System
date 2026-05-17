@@ -18,25 +18,27 @@
   </form>
 </section>
 <section class="section">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th class="text-cell">Task</th>
-        <th class="time-cell">Scheduled Time</th>
-        <th class="status-cell">Completion Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for schedule in schedules %}
-      <tr>
-        <td class="text-cell">{{ schedule.task }}</td>
-        <td class="time-cell">{{ schedule.scheduled_time.strftime("%Y-%m-%d %H:%M") }}</td>
-        <td class="status-cell"><span class="status {{ schedule.status }}">{{ schedule.status }}</span></td>
-      </tr>
-      {% else %}
-      <tr><td colspan="3">No schedules loaded.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-shell">
+    <table class="data-table schedule-table">
+      <thead>
+        <tr>
+          <th class="text-cell">Task</th>
+          <th class="time-cell">Scheduled Time</th>
+          <th class="status-cell">Completion Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for schedule in schedules %}
+        <tr>
+          <td class="text-cell">{{ schedule.task }}</td>
+          <td class="time-cell">{{ schedule.scheduled_time.strftime("%Y-%m-%d %H:%M") }}</td>
+          <td class="status-cell"><span class="status {{ schedule.status }}">{{ schedule.status }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3">No schedules loaded.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </section>
 {% endblock %}

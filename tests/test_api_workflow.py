@@ -22,7 +22,17 @@ def test_ui_home_renders_publish_form(client):
 
     assert response.status_code == 200
     assert "Publish Advisory" in response.text
+    assert "Add Advisory" in response.text
     assert "Patient ID" in response.text
+    assert 'id="advisory-modal"' in response.text
+
+
+def test_ui_toast_markup_renders(client):
+    response = client.get("/ui/advisories", params={"toast": "advisory_created"})
+
+    assert response.status_code == 200
+    assert "Advisory published successfully." in response.text
+    assert 'class="toast success"' in response.text
 
 
 def test_create_advisory_generates_schedules_and_events(client):

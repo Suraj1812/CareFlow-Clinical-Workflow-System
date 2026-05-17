@@ -19,27 +19,29 @@
 </section>
 
 <section class="section">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th class="status-cell">Severity</th>
-        <th class="id-cell">Patient ID</th>
-        <th class="text-cell">Reason</th>
-        <th class="time-cell">Timestamp</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for alert in alerts %}
-      <tr>
-        <td class="status-cell"><span class="severity {{ alert.severity|lower }}">{{ alert.severity }}</span></td>
-        <td class="id-cell">{{ alert.patient_id }}</td>
-        <td class="text-cell">{{ alert.reason }}</td>
-        <td class="time-cell">{{ alert.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
-      </tr>
-      {% else %}
-      <tr><td colspan="4">No alerts recorded.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-shell">
+    <table class="data-table alert-table">
+      <thead>
+        <tr>
+          <th class="status-cell">Severity</th>
+          <th class="patient-cell">Patient ID</th>
+          <th class="text-cell">Reason</th>
+          <th class="time-cell">Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for alert in alerts %}
+        <tr>
+          <td class="status-cell"><span class="severity {{ alert.severity|lower }}">{{ alert.severity }}</span></td>
+          <td class="patient-cell">{{ alert.patient_id }}</td>
+          <td class="text-cell">{{ alert.reason }}</td>
+          <td class="time-cell">{{ alert.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">No alerts recorded.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </section>
 {% endblock %}

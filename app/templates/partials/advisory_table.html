@@ -1,26 +1,28 @@
-<table class="data-table">
-  <thead>
-    <tr>
-      <th class="id-cell">Advisory ID</th>
-      <th class="id-cell">Patient</th>
-      <th>Clinician</th>
-      <th class="text-cell">Instruction</th>
-      <th>Schedule</th>
-      <th class="time-cell">Created</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for advisory in advisories %}
-    <tr>
-      <td class="id-cell"><a href="/ui/advisories/{{ advisory.advisory_id }}">{{ advisory.advisory_id }}</a></td>
-      <td class="id-cell">{{ advisory.patient_id }}</td>
-      <td>{{ advisory.clinician_name }}</td>
-      <td class="text-cell">{{ advisory.instruction }}</td>
-      <td>{{ advisory.schedule_type }} at {{ advisory.time }}</td>
-      <td class="time-cell">{{ advisory.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
-    </tr>
-    {% else %}
-    <tr><td colspan="6">No advisories recorded.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="table-shell">
+  <table class="data-table advisory-table">
+    <thead>
+      <tr>
+        <th class="id-cell">Advisory ID</th>
+        <th class="patient-cell">Patient</th>
+        <th class="name-cell">Clinician</th>
+        <th class="text-cell">Instruction</th>
+        <th class="schedule-cell">Schedule</th>
+        <th class="time-cell">Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for advisory in advisories %}
+      <tr>
+        <td class="id-cell"><a href="/ui/advisories/{{ advisory.advisory_id }}">{{ advisory.advisory_id }}</a></td>
+        <td class="patient-cell">{{ advisory.patient_id }}</td>
+        <td class="name-cell">{{ advisory.clinician_name }}</td>
+        <td class="text-cell">{{ advisory.instruction }}</td>
+        <td class="schedule-cell">{{ advisory.schedule_type }} at {{ advisory.time }}</td>
+        <td class="time-cell">{{ advisory.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">No advisories recorded.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

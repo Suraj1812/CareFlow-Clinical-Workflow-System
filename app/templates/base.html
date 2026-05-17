@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="/static/styles.css">
   </head>
-  <body>
+  <body data-open-modal="{{ open_modal|default('') }}">
     {% set current_path = request.url.path %}
     <header class="topbar">
       <a class="brand" href="/" aria-label="CareFlow">
@@ -43,10 +43,75 @@
     <main class="page animate__animated animate__fadeIn">
       {% block content %}{% endblock %}
     </main>
+    <div class="toast-region" aria-live="polite" aria-atomic="true">
+      {% if toast_message %}
+      <div class="toast {{ toast_type|default('success') }}" role="status">
+        <i data-lucide="{{ 'circle-alert' if toast_type == 'error' else 'circle-check' }}"></i>
+        <span>{{ toast_message }}</span>
+        <button class="toast-close" type="button" aria-label="Dismiss"><i data-lucide="x"></i></button>
+      </div>
+      {% endif %}
+    </div>
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script>
-      if (window.lucide) {
-        window.lucide.createIcons({ attrs: { "aria-hidden": "true" } });
+      function refreshIcons() {
+        if (window.lucide) {
+          window.lucide.createIcons({ attrs: { "aria-hidden": "true" } });
+        }
+      }
+
+      refreshIcons();
+
+      document.querySelectorAll("[data-open-modal]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var modal = document.getElementById(button.dataset.openModal);
+          if (!modal) return;
+          if (typeof modal.showModal === "function") {
+            modal.showModal();
+          } else {
+            modal.setAttribute("open", "");
+          }
+          refreshIcons();
+        });
+      });
+
+      document.querySelectorAll("[data-close-modal]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var modal = button.closest("dialog");
+          if (modal) modal.close();
+        });
+      });
+
+      document.querySelectorAll("dialog.modal").forEach(function (modal) {
+        modal.addEventListener("click", function (event) {
+          if (event.target === modal) modal.close();
+        });
+      });
+
+      var initialModal = document.body.dataset.openModal;
+      if (initialModal) {
+        var modal = document.getElementById(initialModal);
+        if (modal && typeof modal.showModal === "function") {
+          modal.showModal();
+        } else if (modal) {
+          modal.setAttribute("open", "");
+        }
+      }
+
+      document.querySelectorAll(".toast").forEach(function (toast) {
+        var close = toast.querySelector(".toast-close");
+        var dismiss = function () {
+          toast.classList.add("is-hiding");
+          window.setTimeout(function () { toast.remove(); }, 180);
+        };
+        if (close) close.addEventListener("click", dismiss);
+        window.setTimeout(dismiss, 4200);
+      });
+
+      if (window.history && window.location.search.indexOf("toast=") !== -1) {
+        var url = new URL(window.location.href);
+        url.searchParams.delete("toast");
+        window.history.replaceState({}, "", url);
       }
     </script>
   </body>

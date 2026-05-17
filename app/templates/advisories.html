@@ -2,10 +2,13 @@
 {% block title %}{{ page_title }}{% endblock %}
 {% block content %}
 <section class="section">
-  <div class="section-header">
+  <div class="section-header with-actions">
     <h1>Advisories</h1>
+    <button type="button" class="button-secondary" data-open-modal="advisory-modal">
+      <i data-lucide="plus"></i><span>Add Advisory</span>
+    </button>
   </div>
-  <form method="get" action="/ui/advisories" class="filter-form">
+  <form method="get" action="/ui/advisories" class="filter-form compact-filter">
     <label>
       Search
       <input name="q" value="{{ q }}" type="search">
@@ -14,4 +17,6 @@
   </form>
   {% include "partials/advisory_table.html" %}
 </section>
+
+{% include "partials/advisory_modal.html" %}
 {% endblock %}

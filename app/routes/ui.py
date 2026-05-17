@@ -49,6 +49,16 @@ PAGE_META = {
 def _render(request: Request, template_name: str, context: dict):
     base_context = {"request": request}
     base_context.update(PAGE_META.get(template_name, {}))
+    toast_messages = {
+        "advisory_created": "Advisory published successfully.",
+        "response_recorded": "Response recorded successfully.",
+        "validation_error": "Please check the form fields and try again.",
+        "response_error": "Response could not be recorded.",
+    }
+    toast_key = request.query_params.get("toast")
+    if toast_key in toast_messages:
+        base_context["toast_message"] = toast_messages[toast_key]
+        base_context["toast_type"] = "error" if toast_key.endswith("error") else "success"
     base_context.update(context)
     return templates.TemplateResponse(name=template_name, context=base_context, request=request)
 
@@ -71,7 +81,15 @@ def home(request: Request, db: Session = Depends(get_db)):
 @router.get("/ui/advisories")
 def ui_advisories(request: Request, q: str | None = None, db: Session = Depends(get_db)):
     advisories = advisory_service.list_advisories(db, q)
-    return _render(request, "advisories.html", {"advisories": advisories, "q": q or ""})
+    return _render(
+        request,
+        "advisories.html",
+        {
+            "advisories": advisories,
+            "generated_patient_id": advisory_service.generate_patient_id(db),
+            "q": q or "",
+        },
+    )
 
 
 @router.post("/ui/advisories")
@@ -111,11 +129,14 @@ def ui_create_advisory(
                     "time": time,
                 },
                 "generated_patient_id": patient_id or advisory_service.generate_patient_id(db),
+                "open_modal": "advisory-modal",
+                "toast_message": "Please check the form fields and try again.",
+                "toast_type": "error",
                 "q": "",
             },
         )
     return RedirectResponse(
-        url=f"/ui/advisories/{result.advisory.advisory_id}",
+        url=f"/ui/advisories?toast=advisory_created",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
@@ -174,6 +195,7 @@ def ui_responses(
             "schedules": schedules,
             "responses": responses,
             "error": None,
+            "form": {"patient_id": patient_id or ""},
             "q": q or "",
         },
     )
@@ -209,10 +231,22 @@ def ui_create_response(
                 "schedules": schedules,
                 "responses": responses,
                 "error": "Response could not be recorded. Confirm the patient and schedule values.",
+                "form": {
+                    "patient_id": patient_id,
+                    "schedule_id": schedule_id,
+                    "observation_type": observation_type,
+                    "value": value,
+                },
+                "open_modal": "response-modal",
+                "toast_message": "Response could not be recorded.",
+                "toast_type": "error",
                 "q": "",
             },
         )
-    return RedirectResponse(url=f"/ui/responses?patient_id={patient_id}", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(
+        url=f"/ui/responses?patient_id={patient_id}&toast=response_recorded",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
 
 
 @router.get("/ui/alerts")
