@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Alerts - CareFlow{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="section-header">
+    <h1>Alerts</h1>
+  </div>
+  <form method="get" action="/ui/alerts" class="inline-form">
+    <label>
+      Patient ID
+      <input name="patient_id" value="{{ patient_id }}">
+    </label>
+    <button type="submit">Filter Alerts</button>
+  </form>
+</section>
+
+<section class="section">
+  <table>
+    <thead>
+      <tr>
+        <th>Severity</th>
+        <th>Patient ID</th>
+        <th>Reason</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alert in alerts %}
+      <tr>
+        <td><span class="severity {{ alert.severity|lower }}">{{ alert.severity }}</span></td>
+        <td>{{ alert.patient_id }}</td>
+        <td>{{ alert.reason }}</td>
+        <td>{{ alert.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">No alerts recorded.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
+

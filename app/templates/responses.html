@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Responses - CareFlow{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="section-header">
+    <h1>Record Response</h1>
+  </div>
+
+  {% if error %}
+  <p class="notice error">{{ error }}</p>
+  {% endif %}
+
+  <form method="get" action="/ui/responses" class="inline-form">
+    <label>
+      Patient ID
+      <input name="patient_id" value="{{ patient_id }}" required>
+    </label>
+    <button type="submit">Load Patient</button>
+  </form>
+
+  <form method="post" action="/ui/responses" class="form-grid compact">
+    <label>
+      Patient ID
+      <input name="patient_id" value="{{ patient_id }}" required>
+    </label>
+    <label>
+      Schedule ID
+      <select name="schedule_id" required>
+        {% for schedule in schedules %}
+        <option value="{{ schedule.schedule_id }}">{{ schedule.schedule_id }} - {{ schedule.scheduled_time.strftime("%Y-%m-%d %H:%M") }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Observation Type
+      <select name="observation_type">
+        <option value="blood_sugar">Blood sugar</option>
+        <option value="heart_rate">Heart rate</option>
+        <option value="temperature">Temperature</option>
+        <option value="oxygen_saturation">Oxygen saturation</option>
+      </select>
+    </label>
+    <label>
+      Value
+      <input name="value" type="number" step="0.01" min="0" required>
+    </label>
+    <div class="form-actions full">
+      <button type="submit">Record Response</button>
+    </div>
+  </form>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2>Recent Responses</h2>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Response ID</th>
+        <th>Patient</th>
+        <th>Schedule</th>
+        <th>Observation</th>
+        <th>Value</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for response in responses %}
+      <tr>
+        <td>{{ response.response_id }}</td>
+        <td>{{ response.patient_id }}</td>
+        <td>{{ response.schedule_id }}</td>
+        <td>{{ response.observation_type.replace("_", " ") }}</td>
+        <td>{{ response.value }}</td>
+        <td>{{ response.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">No responses recorded.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
+

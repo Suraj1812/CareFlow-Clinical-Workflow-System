@@ -1,0 +1,27 @@
+<table>
+  <thead>
+    <tr>
+      <th>Advisory ID</th>
+      <th>Patient</th>
+      <th>Clinician</th>
+      <th>Instruction</th>
+      <th>Schedule</th>
+      <th>Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for advisory in advisories %}
+    <tr>
+      <td><a href="/ui/advisories/{{ advisory.advisory_id }}">{{ advisory.advisory_id }}</a></td>
+      <td>{{ advisory.patient_id }}</td>
+      <td>{{ advisory.clinician_name }}</td>
+      <td>{{ advisory.instruction }}</td>
+      <td>{{ advisory.schedule_type }} at {{ advisory.time }}</td>
+      <td>{{ advisory.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">No advisories recorded.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+

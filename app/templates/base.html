@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}CareFlow{% endblock %}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">CareFlow</a>
+      <nav aria-label="Primary">
+        <a href="/">Publish Advisory</a>
+        <a href="/ui/advisories">Advisories</a>
+        <a href="/ui/schedule">Schedules</a>
+        <a href="/ui/responses">Responses</a>
+        <a href="/ui/alerts">Alerts</a>
+        <a href="/docs">API Docs</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
+
