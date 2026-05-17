@@ -5,7 +5,6 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.models.entities import Advisory, Schedule
 from app.schemas.advisory import AdvisoryCreate
 from app.schemas.response import PatientResponseCreate
 from app.services import advisory_service, response_service
@@ -19,7 +18,7 @@ templates = Jinja2Templates(directory="app/templates")
 def _render(request: Request, template_name: str, context: dict):
     base_context = {"request": request}
     base_context.update(context)
-    return templates.TemplateResponse(template_name, base_context)
+    return templates.TemplateResponse(name=template_name, context=base_context, request=request)
 
 
 @router.get("/")
@@ -160,4 +159,3 @@ def ui_create_response(
 def ui_alerts(request: Request, patient_id: str | None = None, db: Session = Depends(get_db)):
     alerts = list_alerts(db, patient_id)
     return _render(request, "alerts.html", {"alerts": alerts, "patient_id": patient_id or ""})
-

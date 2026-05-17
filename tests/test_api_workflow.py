@@ -17,6 +17,14 @@ def test_health_check(client):
     assert response.json() == {"status": "healthy"}
 
 
+def test_ui_home_renders_publish_form(client):
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "Publish Advisory" in response.text
+    assert "Patient ID" in response.text
+
+
 def test_create_advisory_generates_schedules_and_events(client):
     response = client.post(
         "/advisories",
@@ -85,4 +93,3 @@ def test_response_ingestion_triggers_alert_and_is_idempotent(client):
     assert first.json()["response"]["response_id"] == second.json()["response"]["response_id"]
     assert first.json()["alerts"][0]["severity"] == "HIGH"
     assert len(alerts.json()) == 1
-
