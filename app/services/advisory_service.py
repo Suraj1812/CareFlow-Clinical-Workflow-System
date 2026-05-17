@@ -1,5 +1,6 @@
 import logging
 
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.models.entities import Advisory
@@ -7,9 +8,18 @@ from app.schemas.advisory import AdvisoryCreate, AdvisoryCreateResponse, Advisor
 from app.schemas.schedule import ScheduleRead
 from app.services.event_service import append_event
 from app.services.schedule_service import build_schedule_entries
-from app.utils.ids import new_id
+from app.utils.ids import new_id, new_patient_id
 
 logger = logging.getLogger("careflow.advisories")
+
+
+def generate_patient_id(db: Session) -> str:
+    for _ in range(10):
+        patient_id = new_patient_id()
+        exists = db.query(Advisory.id).filter(Advisory.patient_id == patient_id).first()
+        if not exists:
+            return patient_id
+    return new_patient_id()
 
 
 def _advisory_read(advisory: Advisory) -> AdvisoryRead:
@@ -36,9 +46,10 @@ def _schedule_read(schedule) -> ScheduleRead:
 
 
 def publish_advisory(db: Session, payload: AdvisoryCreate) -> AdvisoryCreateResponse:
+    patient_id = payload.patient_id or generate_patient_id(db)
     advisory = Advisory(
         advisory_id=new_id("ADV"),
-        patient_id=payload.patient_id,
+        patient_id=patient_id,
         clinician_name=payload.clinician_name,
         instruction=payload.instruction,
         schedule_type=payload.schedule_type,
@@ -98,8 +109,20 @@ def publish_advisory(db: Session, payload: AdvisoryCreate) -> AdvisoryCreateResp
     )
 
 
-def list_advisories(db: Session) -> list[AdvisoryRead]:
-    advisories = db.query(Advisory).order_by(Advisory.created_at.desc(), Advisory.id.desc()).all()
+def list_advisories(db: Session, q: str | None = None) -> list[AdvisoryRead]:
+    query = db.query(Advisory)
+    if q:
+        term = f"%{q.strip()}%"
+        query = query.filter(
+            or_(
+                Advisory.advisory_id.ilike(term),
+                Advisory.patient_id.ilike(term),
+                Advisory.clinician_name.ilike(term),
+                Advisory.instruction.ilike(term),
+                Advisory.schedule_type.ilike(term),
+            )
+        )
+    advisories = query.order_by(Advisory.created_at.desc(), Advisory.id.desc()).all()
     return [_advisory_read(advisory) for advisory in advisories]
 
 

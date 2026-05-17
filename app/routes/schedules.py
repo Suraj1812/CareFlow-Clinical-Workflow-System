@@ -10,8 +10,7 @@ router = APIRouter(tags=["schedules"])
 
 
 @router.get("/patients/{patient_id}/schedule", response_model=list[ScheduleRead])
-def get_patient_schedule(patient_id: str, db: Session = Depends(get_db)):
-    schedules = list_patient_schedule(db, patient_id)
+def get_patient_schedule(patient_id: str, q: str | None = None, db: Session = Depends(get_db)):
+    schedules = list_patient_schedule(db, patient_id, q)
     db.commit()
     return [_schedule_read(schedule) for schedule in schedules]
-

@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import status
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.models.entities import Alert, PatientResponse, Schedule
@@ -130,9 +131,19 @@ def record_response(db: Session, payload: PatientResponseCreate) -> PatientRespo
     )
 
 
-def list_responses(db: Session, patient_id: str | None = None) -> list[PatientResponseRead]:
+def list_responses(db: Session, patient_id: str | None = None, q: str | None = None) -> list[PatientResponseRead]:
     query = db.query(PatientResponse)
     if patient_id:
         query = query.filter(PatientResponse.patient_id == patient_id)
+    if q:
+        term = f"%{q.strip()}%"
+        query = query.filter(
+            or_(
+                PatientResponse.response_id.ilike(term),
+                PatientResponse.patient_id.ilike(term),
+                PatientResponse.schedule_id.ilike(term),
+                PatientResponse.observation_type.ilike(term),
+            )
+        )
     responses = query.order_by(PatientResponse.created_at.desc(), PatientResponse.id.desc()).limit(100).all()
     return [_response_read(response) for response in responses]

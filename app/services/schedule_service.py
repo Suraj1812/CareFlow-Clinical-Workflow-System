@@ -1,5 +1,6 @@
 from datetime import datetime, time, timedelta
 
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.models.entities import Schedule
@@ -60,11 +61,16 @@ def mark_overdue_schedules_missed(db: Session, patient_id: str, now: datetime | 
     return len(schedules)
 
 
-def list_patient_schedule(db: Session, patient_id: str) -> list[Schedule]:
+def list_patient_schedule(db: Session, patient_id: str, q: str | None = None) -> list[Schedule]:
     mark_overdue_schedules_missed(db, patient_id)
-    return (
-        db.query(Schedule)
-        .filter(Schedule.patient_id == patient_id)
-        .order_by(Schedule.scheduled_time.asc())
-        .all()
-    )
+    query = db.query(Schedule).filter(Schedule.patient_id == patient_id)
+    if q:
+        term = f"%{q.strip()}%"
+        query = query.filter(
+            or_(
+                Schedule.schedule_id.ilike(term),
+                Schedule.task.ilike(term),
+                Schedule.status.ilike(term),
+            )
+        )
+    return query.order_by(Schedule.scheduled_time.asc()).all()

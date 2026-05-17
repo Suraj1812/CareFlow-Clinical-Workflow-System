@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Advisory {{ result.advisory.advisory_id }} - CareFlow{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
 <section class="section">
   <div class="section-header">
@@ -17,26 +17,25 @@
   <div class="section-header">
     <h2>Generated Schedule</h2>
   </div>
-  <table>
+  <table class="data-table">
     <thead>
       <tr>
-        <th>Schedule ID</th>
-        <th>Task</th>
-        <th>Scheduled Time</th>
-        <th>Status</th>
+        <th class="id-cell">Schedule ID</th>
+        <th class="text-cell">Task</th>
+        <th class="time-cell">Scheduled Time</th>
+        <th class="status-cell">Status</th>
       </tr>
     </thead>
     <tbody>
       {% for schedule in result.schedules %}
       <tr>
-        <td>{{ schedule.schedule_id }}</td>
-        <td>{{ schedule.task }}</td>
-        <td>{{ schedule.scheduled_time.strftime("%Y-%m-%d %H:%M") }}</td>
-        <td><span class="status {{ schedule.status }}">{{ schedule.status }}</span></td>
+        <td class="id-cell">{{ schedule.schedule_id }}</td>
+        <td class="text-cell">{{ schedule.task }}</td>
+        <td class="time-cell">{{ schedule.scheduled_time.strftime("%Y-%m-%d %H:%M") }}</td>
+        <td class="status-cell"><span class="status {{ schedule.status }}">{{ schedule.status }}</span></td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </section>
 {% endblock %}
-

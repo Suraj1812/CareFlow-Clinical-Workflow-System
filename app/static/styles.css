@@ -39,6 +39,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+img,
+svg {
+  display: block;
+}
+
 a {
   color: var(--primary);
   text-decoration: none;
@@ -81,11 +86,10 @@ button {
   letter-spacing: 0;
 }
 
-.brand svg {
-  width: 20px;
-  height: 20px;
-  color: var(--primary);
-  stroke-width: 2.4;
+.brand img {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
 }
 
 nav {
@@ -106,6 +110,11 @@ nav a {
   transition: background-color 140ms ease, color 140ms ease;
 }
 
+nav a.active {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
 nav a:hover {
   background: var(--primary-soft);
   color: var(--primary);
@@ -118,6 +127,15 @@ button svg {
   height: 17px;
   flex: 0 0 auto;
   stroke-width: 2.1;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(75, 147, 168, 0.32);
+  outline-offset: 2px;
 }
 
 .page {
@@ -198,6 +216,12 @@ textarea {
   transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
 }
 
+input[readonly] {
+  background: #eef5f7;
+  color: #253743;
+  cursor: default;
+}
+
 textarea {
   min-height: 118px;
   resize: vertical;
@@ -256,13 +280,34 @@ button:active {
   min-width: 0;
 }
 
+.filter-form {
+  display: grid;
+  grid-template-columns: minmax(180px, 320px) minmax(220px, 1fr) minmax(150px, auto);
+  align-items: end;
+  gap: 12px;
+  margin: -2px 0 18px;
+  max-width: 900px;
+}
+
+.filter-form label {
+  min-width: 0;
+}
+
+.filter-form button {
+  min-width: 150px;
+}
+
+.response-entry-form {
+  padding-top: 4px;
+}
+
 table {
   width: 100%;
   border: 1px solid var(--line);
   border-collapse: separate;
   border-spacing: 0;
   background: var(--surface);
-  table-layout: auto;
+  table-layout: fixed;
 }
 
 thead th {
@@ -290,6 +335,7 @@ th {
 td {
   color: #24313b;
   font-size: 14px;
+  overflow-wrap: anywhere;
 }
 
 tbody tr {
@@ -312,6 +358,38 @@ th:first-child {
 td:last-child,
 th:last-child {
   padding-right: 15px;
+}
+
+.id-cell,
+.time-cell,
+.number-cell,
+.status-cell {
+  white-space: nowrap;
+}
+
+.id-cell {
+  width: 148px;
+  font-variant-numeric: tabular-nums;
+}
+
+.time-cell {
+  width: 162px;
+  font-variant-numeric: tabular-nums;
+}
+
+.number-cell {
+  width: 88px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.status-cell {
+  width: 132px;
+}
+
+.text-cell {
+  min-width: 240px;
+  white-space: normal;
 }
 
 .details {
@@ -426,6 +504,14 @@ dd {
   .page {
     padding: 24px 16px 40px;
   }
+
+  .filter-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filter-form button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 760px) {
@@ -456,8 +542,13 @@ dd {
     grid-template-columns: 1fr;
   }
 
+  .filter-form {
+    grid-template-columns: 1fr;
+  }
+
   .inline-form button,
-  .form-actions button {
+  .form-actions button,
+  .filter-form button {
     width: 100%;
   }
 
@@ -465,10 +556,25 @@ dd {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
   }
 
   th,
   td {
     padding: 10px 11px;
+  }
+
+  .text-cell {
+    min-width: 260px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
   }
 }

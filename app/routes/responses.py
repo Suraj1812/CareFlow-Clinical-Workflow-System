@@ -36,6 +36,5 @@ def create_response(
 
 
 @router.get("/responses", response_model=list[PatientResponseRead])
-def list_responses(patient_id: str | None = None, db: Session = Depends(get_db)):
-    return response_service.list_responses(db, patient_id)
-
+def list_responses(patient_id: str | None = None, q: str | None = None, db: Session = Depends(get_db)):
+    return response_service.list_responses(db, patient_id, q)

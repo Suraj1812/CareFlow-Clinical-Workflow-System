@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Responses - CareFlow{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
 <section class="section">
   <div class="section-header">
@@ -10,15 +10,19 @@
   <p class="notice error">{{ error }}</p>
   {% endif %}
 
-  <form method="get" action="/ui/responses" class="inline-form">
+  <form method="get" action="/ui/responses" class="filter-form">
     <label>
       Patient ID
       <input name="patient_id" value="{{ patient_id }}" required>
     </label>
+    <label>
+      Search
+      <input name="q" value="{{ q }}" type="search">
+    </label>
     <button type="submit"><i data-lucide="search"></i><span>Load Patient</span></button>
   </form>
 
-  <form method="post" action="/ui/responses" class="form-grid compact">
+  <form method="post" action="/ui/responses" class="form-grid compact response-entry-form">
     <label>
       Patient ID
       <input name="patient_id" value="{{ patient_id }}" required>
@@ -54,26 +58,26 @@
   <div class="section-header">
     <h2>Recent Responses</h2>
   </div>
-  <table>
+  <table class="data-table">
     <thead>
       <tr>
-        <th>Response ID</th>
-        <th>Patient</th>
-        <th>Schedule</th>
+        <th class="id-cell">Response ID</th>
+        <th class="id-cell">Patient</th>
+        <th class="id-cell">Schedule</th>
         <th>Observation</th>
-        <th>Value</th>
-        <th>Timestamp</th>
+        <th class="number-cell">Value</th>
+        <th class="time-cell">Timestamp</th>
       </tr>
     </thead>
     <tbody>
       {% for response in responses %}
       <tr>
-        <td>{{ response.response_id }}</td>
-        <td>{{ response.patient_id }}</td>
-        <td>{{ response.schedule_id }}</td>
+        <td class="id-cell">{{ response.response_id }}</td>
+        <td class="id-cell">{{ response.patient_id }}</td>
+        <td class="id-cell">{{ response.schedule_id }}</td>
         <td>{{ response.observation_type.replace("_", " ") }}</td>
-        <td>{{ response.value }}</td>
-        <td>{{ response.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+        <td class="number-cell">{{ response.value }}</td>
+        <td class="time-cell">{{ response.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
       </tr>
       {% else %}
       <tr><td colspan="6">No responses recorded.</td></tr>

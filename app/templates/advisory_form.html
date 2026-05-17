@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Publish Advisory - CareFlow{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
 <section class="section">
   <div class="section-header">
@@ -13,7 +13,7 @@
   <form method="post" action="/ui/advisories" class="form-grid">
     <label>
       Patient ID
-      <input name="patient_id" value="{{ form.patient_id if form else '' }}" required>
+      <input name="patient_id" value="{{ form.patient_id if form else generated_patient_id }}" readonly required>
     </label>
     <label>
       Clinician Name
@@ -44,6 +44,13 @@
   <div class="section-header">
     <h2>Recent Advisories</h2>
   </div>
+  <form method="get" action="/ui/advisories" class="filter-form">
+    <label>
+      Search
+      <input name="q" value="{{ q }}" type="search">
+    </label>
+    <button type="submit"><i data-lucide="search"></i><span>Search</span></button>
+  </form>
   {% include "partials/advisory_table.html" %}
 </section>
 {% endblock %}

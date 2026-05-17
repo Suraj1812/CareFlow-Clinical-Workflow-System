@@ -1,0 +1,14 @@
+{
+  "name": "CareFlow Clinical Workflow System",
+  "short_name": "CareFlow",
+  "icons": [
+    {
+      "src": "/static/logo.svg",
+      "sizes": "96x96",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#155e75",
+  "background_color": "#f7f9fb",
+  "display": "standalone"
+}

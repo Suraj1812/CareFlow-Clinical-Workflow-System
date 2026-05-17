@@ -90,10 +90,18 @@ curl -X POST http://localhost:8000/advisories \
   }'
 ```
 
+`patient_id` may be omitted. CareFlow will generate a stable internal patient ID for the advisory.
+
 List advisories:
 
 ```bash
 curl http://localhost:8000/advisories
+```
+
+Filter advisories:
+
+```bash
+curl "http://localhost:8000/advisories?q=P001"
 ```
 
 Get a patient schedule:
@@ -120,6 +128,12 @@ List alerts:
 
 ```bash
 curl http://localhost:8000/alerts
+```
+
+Filter alerts:
+
+```bash
+curl "http://localhost:8000/alerts?patient_id=P001&q=HIGH"
 ```
 
 ## Idempotency
@@ -201,4 +215,3 @@ docker run -p 8000:8000 -e PORT=8000 careflow
 - Startup automatically initializes the schema.
 - The UI is intentionally minimal and server-rendered for operational reliability.
 - Schema migration tooling can be added later if the database contract evolves beyond this MVP.
-

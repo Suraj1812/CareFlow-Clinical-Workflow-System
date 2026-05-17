@@ -1,36 +1,40 @@
 {% extends "base.html" %}
-{% block title %}Alerts - CareFlow{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
 <section class="section">
   <div class="section-header">
     <h1>Alerts</h1>
   </div>
-  <form method="get" action="/ui/alerts" class="inline-form">
+  <form method="get" action="/ui/alerts" class="filter-form">
     <label>
       Patient ID
       <input name="patient_id" value="{{ patient_id }}">
+    </label>
+    <label>
+      Search
+      <input name="q" value="{{ q }}" type="search">
     </label>
     <button type="submit"><i data-lucide="filter"></i><span>Filter Alerts</span></button>
   </form>
 </section>
 
 <section class="section">
-  <table>
+  <table class="data-table">
     <thead>
       <tr>
-        <th>Severity</th>
-        <th>Patient ID</th>
-        <th>Reason</th>
-        <th>Timestamp</th>
+        <th class="status-cell">Severity</th>
+        <th class="id-cell">Patient ID</th>
+        <th class="text-cell">Reason</th>
+        <th class="time-cell">Timestamp</th>
       </tr>
     </thead>
     <tbody>
       {% for alert in alerts %}
       <tr>
-        <td><span class="severity {{ alert.severity|lower }}">{{ alert.severity }}</span></td>
-        <td>{{ alert.patient_id }}</td>
-        <td>{{ alert.reason }}</td>
-        <td>{{ alert.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+        <td class="status-cell"><span class="severity {{ alert.severity|lower }}">{{ alert.severity }}</span></td>
+        <td class="id-cell">{{ alert.patient_id }}</td>
+        <td class="text-cell">{{ alert.reason }}</td>
+        <td class="time-cell">{{ alert.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
       </tr>
       {% else %}
       <tr><td colspan="4">No alerts recorded.</td></tr>

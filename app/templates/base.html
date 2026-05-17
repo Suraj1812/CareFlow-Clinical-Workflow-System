@@ -3,7 +3,20 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}CareFlow{% endblock %}</title>
+    <meta name="theme-color" content="#155e75">
+    <meta name="description" content="{{ meta_description|default('CareFlow clinical workflow system.') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ page_title|default('CareFlow') }}">
+    <meta property="og:description" content="{{ meta_description|default('CareFlow clinical workflow system.') }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:image" content="{{ request.url_for('static', path='logo.svg') }}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ page_title|default('CareFlow') }}">
+    <meta name="twitter:description" content="{{ meta_description|default('CareFlow clinical workflow system.') }}">
+    <title>{% block title %}{{ page_title|default('CareFlow') }}{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/logo.svg">
+    <link rel="manifest" href="/static/site.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,14 +24,18 @@
     <link rel="stylesheet" href="/static/styles.css">
   </head>
   <body>
+    {% set current_path = request.url.path %}
     <header class="topbar">
-      <a class="brand" href="/"><i data-lucide="cross"></i><span>CareFlow</span></a>
+      <a class="brand" href="/" aria-label="CareFlow">
+        <img src="/static/logo.svg" alt="" width="28" height="28">
+        <span>CareFlow</span>
+      </a>
       <nav aria-label="Primary">
-        <a href="/"><i data-lucide="clipboard-plus"></i><span>Publish Advisory</span></a>
-        <a href="/ui/advisories"><i data-lucide="file-text"></i><span>Advisories</span></a>
-        <a href="/ui/schedule"><i data-lucide="calendar-clock"></i><span>Schedules</span></a>
-        <a href="/ui/responses"><i data-lucide="activity"></i><span>Responses</span></a>
-        <a href="/ui/alerts"><i data-lucide="triangle-alert"></i><span>Alerts</span></a>
+        <a href="/" class="{{ 'active' if current_path == '/' else '' }}" {% if current_path == '/' %}aria-current="page"{% endif %}><i data-lucide="clipboard-plus"></i><span>Publish Advisory</span></a>
+        <a href="/ui/advisories" class="{{ 'active' if current_path.startswith('/ui/advisories') else '' }}" {% if current_path.startswith('/ui/advisories') %}aria-current="page"{% endif %}><i data-lucide="file-text"></i><span>Advisories</span></a>
+        <a href="/ui/schedule" class="{{ 'active' if current_path.startswith('/ui/schedule') else '' }}" {% if current_path.startswith('/ui/schedule') %}aria-current="page"{% endif %}><i data-lucide="calendar-clock"></i><span>Schedules</span></a>
+        <a href="/ui/responses" class="{{ 'active' if current_path.startswith('/ui/responses') else '' }}" {% if current_path.startswith('/ui/responses') %}aria-current="page"{% endif %}><i data-lucide="activity"></i><span>Responses</span></a>
+        <a href="/ui/alerts" class="{{ 'active' if current_path.startswith('/ui/alerts') else '' }}" {% if current_path.startswith('/ui/alerts') %}aria-current="page"{% endif %}><i data-lucide="triangle-alert"></i><span>Alerts</span></a>
         <a href="/docs"><i data-lucide="book-open"></i><span>API Docs</span></a>
       </nav>
     </header>

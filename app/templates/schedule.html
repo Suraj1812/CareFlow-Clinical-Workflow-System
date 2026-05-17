@@ -1,33 +1,37 @@
 {% extends "base.html" %}
-{% block title %}Schedules - CareFlow{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
 <section class="section">
   <div class="section-header">
     <h1>Patient Schedule</h1>
   </div>
-  <form method="get" action="/ui/schedule" class="inline-form">
+  <form method="get" action="/ui/schedule" class="filter-form">
     <label>
       Patient ID
       <input name="patient_id" value="{{ patient_id }}" required>
+    </label>
+    <label>
+      Search
+      <input name="q" value="{{ q }}" type="search">
     </label>
     <button type="submit"><i data-lucide="calendar-search"></i><span>Load Schedule</span></button>
   </form>
 </section>
 <section class="section">
-  <table>
+  <table class="data-table">
     <thead>
       <tr>
-        <th>Task</th>
-        <th>Scheduled Time</th>
-        <th>Completion Status</th>
+        <th class="text-cell">Task</th>
+        <th class="time-cell">Scheduled Time</th>
+        <th class="status-cell">Completion Status</th>
       </tr>
     </thead>
     <tbody>
       {% for schedule in schedules %}
       <tr>
-        <td>{{ schedule.task }}</td>
-        <td>{{ schedule.scheduled_time.strftime("%Y-%m-%d %H:%M") }}</td>
-        <td><span class="status {{ schedule.status }}">{{ schedule.status }}</span></td>
+        <td class="text-cell">{{ schedule.task }}</td>
+        <td class="time-cell">{{ schedule.scheduled_time.strftime("%Y-%m-%d %H:%M") }}</td>
+        <td class="status-cell"><span class="status {{ schedule.status }}">{{ schedule.status }}</span></td>
       </tr>
       {% else %}
       <tr><td colspan="3">No schedules loaded.</td></tr>

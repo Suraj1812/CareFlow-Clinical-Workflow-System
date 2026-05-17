@@ -38,8 +38,8 @@ def create_advisory(
 
 
 @router.get("/advisories", response_model=list[AdvisoryRead])
-def list_advisories(db: Session = Depends(get_db)):
-    return advisory_service.list_advisories(db)
+def list_advisories(q: str | None = None, db: Session = Depends(get_db)):
+    return advisory_service.list_advisories(db, q)
 
 
 @router.get("/advisories/{advisory_id}", response_model=AdvisoryCreateResponse)
@@ -48,4 +48,3 @@ def get_advisory(advisory_id: str, db: Session = Depends(get_db)):
     if result is None:
         raise DomainError("Advisory was not found.", status.HTTP_404_NOT_FOUND)
     return result
-

@@ -9,11 +9,10 @@ router = APIRouter(tags=["alerts"])
 
 
 @router.get("/alerts", response_model=list[AlertRead])
-def get_alerts(db: Session = Depends(get_db)):
-    return list_alerts(db)
+def get_alerts(patient_id: str | None = None, q: str | None = None, db: Session = Depends(get_db)):
+    return list_alerts(db, patient_id, q)
 
 
 @router.get("/patients/{patient_id}/alerts", response_model=list[AlertRead])
-def get_patient_alerts(patient_id: str, db: Session = Depends(get_db)):
-    return list_alerts(db, patient_id)
-
+def get_patient_alerts(patient_id: str, q: str | None = None, db: Session = Depends(get_db)):
+    return list_alerts(db, patient_id, q)

@@ -1,11 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Advisories - CareFlow{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
 <section class="section">
   <div class="section-header">
     <h1>Advisories</h1>
   </div>
+  <form method="get" action="/ui/advisories" class="filter-form">
+    <label>
+      Search
+      <input name="q" value="{{ q }}" type="search">
+    </label>
+    <button type="submit"><i data-lucide="search"></i><span>Search</span></button>
+  </form>
   {% include "partials/advisory_table.html" %}
 </section>
 {% endblock %}
-

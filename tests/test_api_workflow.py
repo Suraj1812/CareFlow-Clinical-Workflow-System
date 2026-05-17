@@ -40,6 +40,18 @@ def test_create_advisory_generates_schedules_and_events(client):
     assert len(body["event_ids"]) == 2
 
 
+def test_create_advisory_auto_generates_patient_id(client):
+    payload = advisory_payload()
+    payload.pop("patient_id")
+
+    response = client.post("/advisories", json=payload)
+
+    assert response.status_code == 201
+    patient_id = response.json()["advisory"]["patient_id"]
+    assert patient_id.startswith("P")
+    assert len(patient_id) == 9
+
+
 def test_advisory_validation_rejects_bad_time(client):
     response = client.post("/advisories", json=advisory_payload(time="25:00"))
 
@@ -57,6 +69,17 @@ def test_advisory_idempotency_returns_cached_response(client):
     assert second.status_code == 201
     assert first.json()["advisory"]["advisory_id"] == second.json()["advisory"]["advisory_id"]
     assert len(advisories.json()) == 1
+
+
+def test_advisory_search_filters_results(client):
+    first = client.post("/advisories", json=advisory_payload(patient_id="P-FILTER-1")).json()
+    client.post("/advisories", json=advisory_payload(patient_id="P-FILTER-2", instruction="Record heart rate"))
+
+    response = client.get("/advisories", params={"q": first["advisory"]["advisory_id"]})
+
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    assert response.json()[0]["patient_id"] == "P-FILTER-1"
 
 
 def test_idempotency_key_conflict(client):
