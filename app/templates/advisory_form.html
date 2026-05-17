@@ -35,7 +35,7 @@
       <input name="time" type="time" value="{{ form.time if form else '08:00' }}" required>
     </label>
     <div class="form-actions full">
-      <button type="submit">Publish Advisory</button>
+      <button type="submit"><i data-lucide="send"></i><span>Publish Advisory</span></button>
     </div>
   </form>
 </section>
@@ -47,4 +47,3 @@
   {% include "partials/advisory_table.html" %}
 </section>
 {% endblock %}
-
